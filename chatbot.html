@@ -1,0 +1,13 @@
+<div id="n8n-chat"></div>
+<script>
+(function(){
+  var w='https://YOUR_N8N_WEBHOOK_URL';
+  var c=document.getElementById('n8n-chat');
+  c.innerHTML='<style>#n8n-chat{position:fixed;bottom:20px;right:20px;z-index:99999;font-family:system-ui,sans-serif}#n8n-btn{width:56px;height:56px;border-radius:50%;background:#1a5f7a;border:none;cursor:pointer;box-shadow:0 4px 20px rgba(0,0,0,.2)}#n8n-btn svg{width:24px;height:24px;fill:#fff}#n8n-box{display:none;position:absolute;bottom:65px;right:0;width:340px;height:450px;background:#fff;border-radius:12px;box-shadow:0 5px 30px rgba(0,0,0,.15);flex-direction:column;overflow:hidden}#n8n-box.open{display:flex}#n8n-hdr{background:#1a5f7a;color:#fff;padding:14px;font-weight:600}#n8n-msg{flex:1;overflow-y:auto;padding:12px;background:#f7f7f7}#n8n-msg div{margin:6px 0;padding:10px 14px;border-radius:12px;max-width:80%;font-size:14px;line-height:1.4}#n8n-msg .bot{background:#e9ecef;align-self:flex-start}#n8n-msg .usr{background:#1a5f7a;color:#fff;margin-left:auto}#n8n-inp{display:flex;padding:10px;border-top:1px solid #e0e0e0}#n8n-inp input{flex:1;border:1px solid #ddd;border-radius:20px;padding:10px 14px;outline:none;font-size:14px}#n8n-inp button{width:40px;height:40px;border-radius:50%;background:#1a5f7a;border:none;margin-left:8px;cursor:pointer}#n8n-inp button svg{width:18px;height:18px;fill:#fff}</style><div id="n8n-box"><div id="n8n-hdr">💬 Hotel Assistant</div><div id="n8n-msg"></div><div id="n8n-inp"><input type="text" placeholder="Type a message..." id="n8n-in"><button id="n8n-snd"><svg viewBox="0 0 24 24"><path d="M2 21l21-9L2 3v7l15 2-15 2z"/></svg></button></div></div><button id="n8n-btn"><svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg></button>';
+  var box=document.getElementById('n8n-box'),btn=document.getElementById('n8n-btn'),msg=document.getElementById('n8n-msg'),inp=document.getElementById('n8n-in'),snd=document.getElementById('n8n-snd'),open=false;
+  function add(t,type){var d=document.createElement('div');d.className=type;d.textContent=t;msg.appendChild(d);msg.scrollTop=msg.scrollHeight;}
+  btn.onclick=function(){open=!open;box.classList.toggle('open',open);if(open&&!msg.hasChildNodes())add('Hello! How can I help you today?','bot');};
+  async function send(){var t=inp.value.trim();if(!t)return;inp.value='';add(t,'usr');try{var r=await fetch(w,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:t})});var d=await r.json();add(d.response||d.message||d.output||'Sorry, try again.','bot');}catch(e){add('Connection error. Please try again.','bot');}}
+  snd.onclick=send;inp.onkeypress=function(e){if(e.key==='Enter')send();};
+})();
+</script>
